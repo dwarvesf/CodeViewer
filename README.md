@@ -1,6 +1,13 @@
 # CodeViewer
 
-A code viewer
+<p align="left">
+	<a href="https://webuild.community">
+        <img src="https://raw.githubusercontent.com/webuild-community/badge/master/svg/made.svg" />
+	</a>
+    <img src="https://img.shields.io/badge/platform-macOS | iOS-lightgrey.svg" alt="platform" />
+</p>
+
+CodeViewer is a custom code editor SwiftUI view, which wrap around the [ace](http://ace.c9.io) editor.
 
 <img width="712" alt="image" src="./misc/img.png">
 
@@ -29,3 +36,7 @@ struct ContentView: View {
     }
 }
 ```
+
+## Requirement
+- iOS >= v13
+- macOS >= v11
