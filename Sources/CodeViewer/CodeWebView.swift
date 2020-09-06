@@ -261,7 +261,7 @@ public class CodeWebView: CustomView {
          configuration.preferences = preferences
          configuration.userContentController = userController
          let webView = WKWebView(frame: bounds, configuration: configuration)
-         webView.setValue(true, forKey: "drawsTransparentBackground") // Prevent white flick
+         //webView.setValue(true, forKey: "drawsTransparentBackground") // Prevent white flick
          return webView
      }()
     
