@@ -256,12 +256,12 @@ public class CodeWebView: CustomView {
     private lazy var webview: WKWebView = {
          let preferences = WKPreferences()
          var userController = WKUserContentController()
-        userController.add(self, name: Constants.aceEditorDidReady) // Callback from Ace editor js
+         userController.add(self, name: Constants.aceEditorDidReady) // Callback from Ace editor js
          let configuration = WKWebViewConfiguration()
          configuration.preferences = preferences
          configuration.userContentController = userController
          let webView = WKWebView(frame: bounds, configuration: configuration)
-         webView.setValue(false, forKey: "drawsBackground") // Prevent white flick
+         webView.setValue(true, forKey: "drawsTransparentBackground") // Prevent white flick
          return webView
      }()
     
