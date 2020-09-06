@@ -268,7 +268,7 @@ public class CodeWebView: CustomView {
     private var pageLoaded = false
     private var pendingFunctions = [JavascriptFunction]()
     
-    override init(frame frameRect: NSRect) {
+    override init(frame frameRect: CGRect) {
         super.init(frame: frameRect)
         initWebView()
     }
