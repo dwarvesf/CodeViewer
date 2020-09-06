@@ -256,19 +256,19 @@ public class CodeWebView: CustomView {
     private lazy var webview: WKWebView = {
          let preferences = WKPreferences()
          var userController = WKUserContentController()
-        userController.add(self, name: Constants.aceEditorDidReady) // Callback from Ace editor js
+         userController.add(self, name: Constants.aceEditorDidReady) // Callback from Ace editor js
          let configuration = WKWebViewConfiguration()
          configuration.preferences = preferences
          configuration.userContentController = userController
          let webView = WKWebView(frame: bounds, configuration: configuration)
-         webView.setValue(false, forKey: "drawsBackground") // Prevent white flick
+         //webView.setValue(true, forKey: "drawsTransparentBackground") // Prevent white flick
          return webView
      }()
     
     private var pageLoaded = false
     private var pendingFunctions = [JavascriptFunction]()
     
-    override init(frame frameRect: NSRect) {
+    override init(frame frameRect: CGRect) {
         super.init(frame: frameRect)
         initWebView()
     }
@@ -315,7 +315,6 @@ public class CodeWebView: CustomView {
 
 extension CodeWebView {
     private func initWebView() {
-        webview.allowsMagnification = false
         webview.translatesAutoresizingMaskIntoConstraints = false
         addSubview(webview)
         webview.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
