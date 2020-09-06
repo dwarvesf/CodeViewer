@@ -315,7 +315,6 @@ public class CodeWebView: CustomView {
 
 extension CodeWebView {
     private func initWebView() {
-        webview.allowsMagnification = false
         webview.translatesAutoresizingMaskIntoConstraints = false
         addSubview(webview)
         webview.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
