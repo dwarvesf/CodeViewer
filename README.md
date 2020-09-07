@@ -11,7 +11,7 @@ CodeViewer is a custom code editor SwiftUI view, which wrap around the [ace](htt
 
 <p align="center">
 	<img width="500" alt="image" src="./misc/img.png">
-	<img width="360" alt="image" src="./misc/img-ios.png">
+	<img width="200" alt="image" src="./misc/img-ios.png">
 </p>
 
 ## Features
