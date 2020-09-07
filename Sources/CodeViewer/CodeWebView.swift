@@ -254,16 +254,22 @@ public class CodeWebView: CustomView {
     }
     
     private lazy var webview: WKWebView = {
-         let preferences = WKPreferences()
-         var userController = WKUserContentController()
-         userController.add(self, name: Constants.aceEditorDidReady) // Callback from Ace editor js
-         let configuration = WKWebViewConfiguration()
-         configuration.preferences = preferences
-         configuration.userContentController = userController
-         let webView = WKWebView(frame: bounds, configuration: configuration)
-         //webView.setValue(true, forKey: "drawsTransparentBackground") // Prevent white flick
-         return webView
-     }()
+        let preferences = WKPreferences()
+        var userController = WKUserContentController()
+        userController.add(self, name: Constants.aceEditorDidReady) // Callback from Ace editor js
+        let configuration = WKWebViewConfiguration()
+        configuration.preferences = preferences
+        configuration.userContentController = userController
+        let webView = WKWebView(frame: bounds, configuration: configuration)
+        
+        #if os(OSX)
+        webView.setValue(true, forKey: "drawsTransparentBackground") // Prevent white flick
+        #elseif os(iOS)
+        webView.isOpaque = false
+        #endif
+        
+        return webView
+    }()
     
     private var pageLoaded = false
     private var pendingFunctions = [JavascriptFunction]()
@@ -300,7 +306,7 @@ public class CodeWebView: CustomView {
     }
     
     func setMode(_ mode: Mode) {
-        callJavascript(javascriptString: "editor.setMode('ace/mode/\(mode.rawValue)');")
+        callJavascript(javascriptString: "editor.session.setMode('ace/mode/\(mode.rawValue)');")
     }
     
     func setReadOnly(_ isReadOnly: Bool) {
@@ -309,6 +315,11 @@ public class CodeWebView: CustomView {
     
     func setFontSize(_ fontSize: Int) {
         let script = "document.getElementById('editor').style.fontSize='\(fontSize)px';"
+        callJavascript(javascriptString: script)
+    }
+    
+    func clearSelection() {
+        let script = "editor.clearSelection();"
         callJavascript(javascriptString: script)
     }
 }

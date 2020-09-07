@@ -12,7 +12,8 @@ import WebKit
 
 public struct CodeViewer: ViewRepresentable {
     
-    private var content: String
+    @Binding var content: String
+    
     private let mode: CodeWebView.Mode
     private let darkTheme: CodeWebView.Theme
     private let lightTheme: CodeWebView.Theme
@@ -23,14 +24,14 @@ public struct CodeViewer: ViewRepresentable {
     @Environment(\.colorScheme) var colorScheme
 
     public init(
-        content: String,
+        content: Binding<String>,
         mode: CodeWebView.Mode = .json,
         darkTheme: CodeWebView.Theme = .solarized_dark,
         lightTheme: CodeWebView.Theme = .solarized_light,
         isReadOnly: Bool = false,
         fontSize: Int = 12
     ) {
-        self.content = content
+        self._content = content
         self.mode = mode
         self.darkTheme = darkTheme
         self.lightTheme = lightTheme
@@ -38,8 +39,7 @@ public struct CodeViewer: ViewRepresentable {
         self.fontSize = fontSize
     }
     
-    func getWebView() -> CodeWebView {
-        codeView.setContent(content)
+    private func getWebView() -> CodeWebView {
         codeView.setReadOnly(isReadOnly)
         codeView.setMode(mode)
         codeView.setFontSize(fontSize)
@@ -48,21 +48,29 @@ public struct CodeViewer: ViewRepresentable {
 
         return codeView
     }
-
+    
+    private func updateView() {
+        colorScheme == .dark ? codeView.setTheme(darkTheme) : codeView.setTheme(lightTheme)
+        codeView.setContent(content)
+        codeView.clearSelection()
+    }
+    
+    // MARK: macOS
     public func makeNSView(context: Context) -> CodeWebView {
         getWebView()
     }
     
     public func updateNSView(_ webview: CodeWebView, context: Context) {
-        colorScheme == .dark ? codeView.setTheme(darkTheme) : codeView.setTheme(lightTheme)
+        updateView()
     }
     
+    // MARK: iOS
     public func makeUIView(context: Context) -> CodeWebView {
         getWebView()
     }
     
     public func updateUIView(_ webview: CodeWebView, context: Context) {
-        colorScheme == .dark ? codeView.setTheme(darkTheme) : codeView.setTheme(lightTheme)
+        updateView()
     }
 }
 
@@ -74,7 +82,7 @@ struct CodeViewer_Previews : PreviewProvider {
     }
     """
     static var previews: some View {
-        CodeViewer(content: jsonString)
+        CodeViewer(content: .constant(jsonString))
     }
 }
 #endif

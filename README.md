@@ -9,7 +9,8 @@
 
 CodeViewer is a custom code editor SwiftUI view, which wrap around the [ace](http://ace.c9.io) editor.
 
-<img width="712" alt="image" src="./misc/img.png">
+<img width="600" alt="image" src="./misc/img.png">
+<img width="360" alt="image" src="./misc/img-ios.png">
 
 ## Features
 
@@ -25,18 +26,29 @@ import SwiftUI
 import CodeViewer
 
 struct ContentView: View {
-    private var json = """
-    {
-        "hello": "world"
-    }
-    """
+    @State private var json = ""
     
     var body: some View {
-        CodeViewer(content: json)
+        CodeViewer(
+            content: $json,
+            mode: .json,
+            darkTheme: .solarized_dark,
+            lightTheme: .solarized_light,
+            isReadOnly: true,
+            fontSize: 54
+        )
+        .onAppear {
+            json = """
+            {
+                "hello": "world"
+            }
+            """
+        }
     }
 }
+
 ```
 
 ## Requirement
 - iOS >= v13
-- macOS >= v11
+- macOS >= v10.15
