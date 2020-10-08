@@ -13,6 +13,7 @@ import WebKit
 public struct CodeViewer: ViewRepresentable {
     
     @Binding var content: String
+    @State private var firstInit = true
     
     private let mode: CodeWebView.Mode
     private let darkTheme: CodeWebView.Theme
@@ -20,6 +21,8 @@ public struct CodeViewer: ViewRepresentable {
     private let isReadOnly: Bool
     private let fontSize: Int
     private let codeView = CodeWebView()
+    
+    var textDidChanged: ((String) -> Void)?
 
     @Environment(\.colorScheme) var colorScheme
 
@@ -29,7 +32,8 @@ public struct CodeViewer: ViewRepresentable {
         darkTheme: CodeWebView.Theme = .solarized_dark,
         lightTheme: CodeWebView.Theme = .solarized_light,
         isReadOnly: Bool = false,
-        fontSize: Int = 12
+        fontSize: Int = 12,
+        textDidChanged: ((String) -> Void)? = nil
     ) {
         self._content = content
         self.mode = mode
@@ -37,23 +41,36 @@ public struct CodeViewer: ViewRepresentable {
         self.lightTheme = lightTheme
         self.isReadOnly = isReadOnly
         self.fontSize = fontSize
+        self.textDidChanged = textDidChanged
     }
     
     private func getWebView() -> CodeWebView {
         codeView.setReadOnly(isReadOnly)
         codeView.setMode(mode)
         codeView.setFontSize(fontSize)
-        
-        colorScheme == .dark ? codeView.setTheme(darkTheme) : codeView.setTheme(lightTheme)
 
+        colorScheme == .dark ? codeView.setTheme(darkTheme) : codeView.setTheme(lightTheme)
+        
         return codeView
     }
     
     private func updateView() {
+        if firstInit {
+            DispatchQueue.main.async {
+                codeView.setContent(content)
+                codeView.clearSelection()
+                firstInit = false
+            }
+        }
+        
         colorScheme == .dark ? codeView.setTheme(darkTheme) : codeView.setTheme(lightTheme)
-        codeView.setContent(content)
-        codeView.clearSelection()
+        
+        codeView.textDidChanged = { text in
+            content = text
+            self.textDidChanged?(text)
+        }
     }
+    
     
     // MARK: macOS
     public func makeNSView(context: Context) -> CodeWebView {

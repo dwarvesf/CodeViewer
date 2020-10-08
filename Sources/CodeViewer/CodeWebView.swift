@@ -15,7 +15,7 @@ import WebKit
     import UIKit
     public typealias CustomView = UIView
 #endif
-
+ 
 // MARK: JavascriptFunction
 
 // JS Func
@@ -251,12 +251,14 @@ public class CodeWebView: CustomView {
     
     private struct Constants {
         static let aceEditorDidReady = "aceEditorDidReady"
+        static let aceEditorDidChanged = "aceEditorDidChanged"
     }
     
     private lazy var webview: WKWebView = {
         let preferences = WKPreferences()
         var userController = WKUserContentController()
         userController.add(self, name: Constants.aceEditorDidReady) // Callback from Ace editor js
+        userController.add(self, name: Constants.aceEditorDidChanged)
         let configuration = WKWebViewConfiguration()
         configuration.preferences = preferences
         configuration.userContentController = userController
@@ -270,6 +272,8 @@ public class CodeWebView: CustomView {
         
         return webView
     }()
+    
+    var textDidChanged: ((String) -> Void)?
     
     private var pageLoaded = false
     private var pendingFunctions = [JavascriptFunction]()
@@ -321,6 +325,13 @@ public class CodeWebView: CustomView {
     func clearSelection() {
         let script = "editor.clearSelection();"
         callJavascript(javascriptString: script)
+    }
+    
+    func getAnnotation(callback: @escaping JavascriptCallback) {
+        let script = "editor.getSession().getAnnotations();"
+        callJavascript(javascriptString: script) { result in
+           callback(result)
+        }
     }
 }
 
@@ -384,6 +395,15 @@ extension CodeWebView: WKScriptMessageHandler {
         if message.name == Constants.aceEditorDidReady {
             pageLoaded = true
             callPendingFunctions()
+            return
+        }
+        
+        // is Text change
+        if message.name == Constants.aceEditorDidChanged,
+           let text = message.body as? String {
+            
+            self.textDidChanged?(text)
+
             return
         }
     }

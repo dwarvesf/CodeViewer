@@ -13,14 +13,21 @@ struct ContentView: View {
     @State private var json = ""
     
     var body: some View {
-        CodeViewer(
-            content: $json,
-            mode: .json,
-            darkTheme: .solarized_dark,
-            lightTheme: .solarized_light,
-            isReadOnly: true,
-            fontSize: 13
-        )
+        VStack {
+            CodeViewer(
+                content: $json,
+                mode: .json,
+                darkTheme: .solarized_dark,
+                lightTheme: .solarized_light,
+                fontSize: 13
+            ) { text in
+                print("new text: \(text)")
+            }
+            
+            Button(action: { print(json)} ) {
+                Label("Json", systemImage: "pencil")
+            }
+        }
         .onAppear {
             json = """
             {

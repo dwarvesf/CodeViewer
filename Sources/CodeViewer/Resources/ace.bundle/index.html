@@ -21,6 +21,12 @@
 <script>
     var editor = ace.edit("editor");
     editor.setShowPrintMargin(false);
+    
+    editor.session.on('change', function(delta) {
+        let message = editor.getValue();
+        window.webkit.messageHandlers.aceEditorDidChanged.postMessage(message);
+    });
+
     window.webkit.messageHandlers.aceEditorDidReady.postMessage(null); // Need at lead 1 arg
 </script>
 </body>
