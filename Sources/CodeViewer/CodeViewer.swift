@@ -63,17 +63,8 @@ public struct CodeViewer: ViewRepresentable {
     }
     
     private func updateView() {
-        if firstInit {
-            DispatchQueue.main.async {
-                codeView.setContent(content)
-                codeView.clearSelection()
-                firstInit = false
-            }
-        }
-        
         colorScheme == .dark ? codeView.setTheme(darkTheme) : codeView.setTheme(lightTheme)
     }
-    
     
     // MARK: macOS
     public func makeNSView(context: Context) -> CodeWebView {
