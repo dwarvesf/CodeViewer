@@ -13,7 +13,8 @@ import WebKit
 public struct CodeViewer: ViewRepresentable {
     
     @Binding var content: String
-    @State private var firstInit = true
+    @Environment(\.colorScheme) var colorScheme
+    var textDidChanged: ((String) -> Void)?
     
     private let mode: CodeWebView.Mode
     private let darkTheme: CodeWebView.Theme
@@ -21,11 +22,9 @@ public struct CodeViewer: ViewRepresentable {
     private let isReadOnly: Bool
     private let fontSize: Int
     private let codeView = CodeWebView()
+    @State private var firstInit = true
+    private var privateContent = ""
     
-    var textDidChanged: ((String) -> Void)?
-
-    @Environment(\.colorScheme) var colorScheme
-
     public init(
         content: Binding<String>,
         mode: CodeWebView.Mode = .json,
@@ -48,9 +47,18 @@ public struct CodeViewer: ViewRepresentable {
         codeView.setReadOnly(isReadOnly)
         codeView.setMode(mode)
         codeView.setFontSize(fontSize)
-
-        colorScheme == .dark ? codeView.setTheme(darkTheme) : codeView.setTheme(lightTheme)
+        codeView.setContent(content)
+        codeView.clearSelection()
         
+        codeView.textDidChanged = { text in
+            guard content != text else {return}
+            
+            content = text
+            self.textDidChanged?(text)
+        }
+        
+        colorScheme == .dark ? codeView.setTheme(darkTheme) : codeView.setTheme(lightTheme)
+
         return codeView
     }
     
@@ -64,11 +72,6 @@ public struct CodeViewer: ViewRepresentable {
         }
         
         colorScheme == .dark ? codeView.setTheme(darkTheme) : codeView.setTheme(lightTheme)
-        
-        codeView.textDidChanged = { text in
-            content = text
-            self.textDidChanged?(text)
-        }
     }
     
     
