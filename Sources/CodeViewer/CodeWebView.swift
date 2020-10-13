@@ -275,6 +275,7 @@ public class CodeWebView: CustomView {
     
     var textDidChanged: ((String) -> Void)?
     
+    private var currentContent: String = ""
     private var pageLoaded = false
     private var pendingFunctions = [JavascriptFunction]()
     
@@ -289,6 +290,13 @@ public class CodeWebView: CustomView {
     }
     
     func setContent(_ value: String) {
+        
+        guard currentContent != value else {
+            return
+        }
+        
+        currentContent = value
+        
         //
         // It's tricky to pass FULL JSON or HTML text with \n or "", ... into JS Bridge
         // Have to wrap with `data_here`
@@ -303,6 +311,8 @@ public class CodeWebView: CustomView {
         
         let script = first + content + end
         callJavascript(javascriptString: script)
+        
+        
     }
     
     func setTheme(_ theme: Theme) {

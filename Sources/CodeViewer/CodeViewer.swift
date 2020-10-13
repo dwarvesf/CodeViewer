@@ -21,9 +21,6 @@ public struct CodeViewer: ViewRepresentable {
     private let lightTheme: CodeWebView.Theme
     private let isReadOnly: Bool
     private let fontSize: Int
-    private let codeView = CodeWebView()
-    @State private var firstInit = true
-    private var privateContent = ""
     
     public init(
         content: Binding<String>,
@@ -43,17 +40,22 @@ public struct CodeViewer: ViewRepresentable {
         self.textDidChanged = textDidChanged
     }
     
-    private func getWebView() -> CodeWebView {
+    public func makeCoordinator() -> Coordinator {
+        Coordinator(content: $content, colorScheme: colorScheme)
+    }
+    
+    private func getWebView(context: Context) -> CodeWebView {
+        let codeView = CodeWebView()
+        
         codeView.setReadOnly(isReadOnly)
         codeView.setMode(mode)
         codeView.setFontSize(fontSize)
+        
         codeView.setContent(content)
         codeView.clearSelection()
         
         codeView.textDidChanged = { text in
-            guard content != text else {return}
-            
-            content = text
+            context.coordinator.set(content: text)
             self.textDidChanged?(text)
         }
         
@@ -62,26 +64,53 @@ public struct CodeViewer: ViewRepresentable {
         return codeView
     }
     
-    private func updateView() {
-        colorScheme == .dark ? codeView.setTheme(darkTheme) : codeView.setTheme(lightTheme)
+    private func updateView(_ webview: CodeWebView, context: Context) {
+        if context.coordinator.colorScheme != colorScheme {
+            colorScheme == .dark ? webview.setTheme(darkTheme) : webview.setTheme(lightTheme)
+            context.coordinator.set(colorScheme: colorScheme)
+        }
     }
     
     // MARK: macOS
     public func makeNSView(context: Context) -> CodeWebView {
-        getWebView()
+        getWebView(context: context)
     }
     
     public func updateNSView(_ webview: CodeWebView, context: Context) {
-        updateView()
+        updateView(webview, context: context)
     }
     
     // MARK: iOS
     public func makeUIView(context: Context) -> CodeWebView {
-        getWebView()
+        getWebView(context: context)
     }
     
     public func updateUIView(_ webview: CodeWebView, context: Context) {
-        updateView()
+        updateView(webview, context: context)
+    }
+}
+
+public extension CodeViewer {
+    class Coordinator: NSObject {
+        @Binding private(set) var content: String
+        private(set) var colorScheme: ColorScheme
+        
+        init(content: Binding<String>, colorScheme: ColorScheme) {
+            _content = content
+            self.colorScheme = colorScheme
+        }
+        
+        func set(content: String) {
+            if self.content != content {
+                self.content = content
+            }
+        }
+        
+        func set(colorScheme: ColorScheme) {
+            if self.colorScheme != colorScheme {
+                self.colorScheme = colorScheme
+            }
+        }
     }
 }
 

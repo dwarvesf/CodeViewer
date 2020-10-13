@@ -10,7 +10,11 @@ import SwiftUI
 import CodeViewer
 
 struct ContentView: View {
-    @State private var json = ""
+    @State private var json = """
+        {
+            "hello": "world"
+        }
+        """
     
     var body: some View {
         VStack {
@@ -27,13 +31,6 @@ struct ContentView: View {
             Button(action: { print(json)} ) {
                 Label("Json", systemImage: "pencil")
             }
-        }
-        .onAppear {
-            json = """
-            {
-                "hello": "world"
-            }
-            """
         }
     }
 }

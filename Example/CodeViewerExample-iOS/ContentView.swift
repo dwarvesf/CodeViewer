@@ -11,7 +11,11 @@ import CodeViewer
 
 struct ContentView: View {
     
-    @State private var json = ""
+    @State private var json =  """
+        {
+            "hello": "world"
+        }
+        """
     
     var body: some View {
         CodeViewer(
