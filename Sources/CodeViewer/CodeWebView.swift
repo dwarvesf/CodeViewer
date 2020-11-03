@@ -343,6 +343,10 @@ public class CodeWebView: CustomView {
            callback(result)
         }
     }
+    
+    func setUseWrapMode(_ isWrap: Bool) {
+        callJavascript(javascriptString: "editor.session.setUseWrapMode(\(isWrap));")
+    }
 }
 
 extension CodeWebView {
