@@ -20,6 +20,7 @@ public struct CodeViewer: ViewRepresentable {
     private let darkTheme: CodeWebView.Theme
     private let lightTheme: CodeWebView.Theme
     private let isReadOnly: Bool
+    private let isWrap: Bool
     private let fontSize: Int
     
     public init(
@@ -28,6 +29,7 @@ public struct CodeViewer: ViewRepresentable {
         darkTheme: CodeWebView.Theme = .solarized_dark,
         lightTheme: CodeWebView.Theme = .solarized_light,
         isReadOnly: Bool = false,
+        isWrap: Bool = false,
         fontSize: Int = 12,
         textDidChanged: ((String) -> Void)? = nil
     ) {
@@ -36,6 +38,7 @@ public struct CodeViewer: ViewRepresentable {
         self.darkTheme = darkTheme
         self.lightTheme = lightTheme
         self.isReadOnly = isReadOnly
+        self.isWrap = isWrap
         self.fontSize = fontSize
         self.textDidChanged = textDidChanged
     }
@@ -48,6 +51,7 @@ public struct CodeViewer: ViewRepresentable {
         let codeView = CodeWebView()
         
         codeView.setReadOnly(isReadOnly)
+        codeView.setUseWrapMode(isWrap)
         codeView.setMode(mode)
         codeView.setFontSize(fontSize)
         
