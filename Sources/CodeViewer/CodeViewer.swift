@@ -21,6 +21,7 @@ public struct CodeViewer: ViewRepresentable {
     private let lightTheme: CodeWebView.Theme
     private let isReadOnly: Bool
     private let fontSize: Int
+    private let lineHeight: Float
     
     public init(
         content: Binding<String>,
@@ -29,6 +30,7 @@ public struct CodeViewer: ViewRepresentable {
         lightTheme: CodeWebView.Theme = .solarized_light,
         isReadOnly: Bool = false,
         fontSize: Int = 12,
+        lineHeight: Float = 1.3,
         textDidChanged: ((String) -> Void)? = nil
     ) {
         self._content = content
@@ -37,6 +39,7 @@ public struct CodeViewer: ViewRepresentable {
         self.lightTheme = lightTheme
         self.isReadOnly = isReadOnly
         self.fontSize = fontSize
+        self.lineHeight = lineHeight
         self.textDidChanged = textDidChanged
     }
     
@@ -50,6 +53,7 @@ public struct CodeViewer: ViewRepresentable {
         codeView.setReadOnly(isReadOnly)
         codeView.setMode(mode)
         codeView.setFontSize(fontSize)
+        codeView.setLineHeight(lineHeight)
         
         codeView.setContent(content)
         codeView.clearSelection()
