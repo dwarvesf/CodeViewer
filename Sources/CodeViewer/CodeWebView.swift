@@ -333,7 +333,7 @@ public class CodeWebView: CustomView {
     }
     
     func setLineHeight(_ lineHeight: Float) {
-        let script = "document.getElementById('editor').style.line-height='\(lineHeight)';"
+        let script = "document.getElementById('editor').style.lineHeight='\(lineHeight)';"
         callJavascript(javascriptString: script)
     }
     
