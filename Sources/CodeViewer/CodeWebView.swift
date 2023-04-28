@@ -332,6 +332,11 @@ public class CodeWebView: CustomView {
         callJavascript(javascriptString: script)
     }
     
+    func setLineHeight(_ lineHeight: Float) {
+        let script = "document.getElementById('editor').style.lineHeight='\(lineHeight)';"
+        callJavascript(javascriptString: script)
+    }
+    
     func clearSelection() {
         let script = "editor.clearSelection();"
         callJavascript(javascriptString: script)
